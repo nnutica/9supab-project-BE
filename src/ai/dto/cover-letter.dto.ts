@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CoverLetterDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CoverLetterDto {
   @IsString()
   @IsNotEmpty()
   resumeText: string;
+
+  @IsString()
+  @IsOptional()
+  additionalInfo?: string;
 }

@@ -68,12 +68,16 @@ export class AiService {
 
   /* สร้าง Cover Letter จาก JD + Resume */
   async generateCoverLetter(dto: CoverLetterDto): Promise<AiResponse> {
+    const additionalBlock = dto.additionalInfo?.trim()
+      ? `\n- ข้อมูลเพิ่มเติมจากผู้สมัคร: "${dto.additionalInfo}"`
+      : '';
+
     const prompt = `คุณคือ "นายสมัครงาน" ผู้เชี่ยวชาญด้านการเขียน Cover Letter ระดับมืออาชีพ
 ภารกิจ: สร้าง Cover Letter จาก Resume และ Job Description
 
 ข้อมูล:
 - Job Description: "${dto.jobDescription}"
-- Resume/CV: "${dto.resumeText}"
+- Resume/CV: "${dto.resumeText}"${additionalBlock}
 
 กฎ:
 1. วิเคราะห์ JD แล้วเลือก highlight จุดแข็งจาก Resume ที่ตรงกับ JD
