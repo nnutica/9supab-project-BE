@@ -7,7 +7,7 @@
     "start": "nest start",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main"
+    "start:prod": "bun dist/main.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
