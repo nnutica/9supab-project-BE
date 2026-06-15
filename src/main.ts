@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,9 @@ async function bootstrap() {
     methods: ['GET', 'POST'],
     credentials: true,
   });
+
+  /* Global interceptor - สำหรับ log ระยะเวลาการทำงาน */
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   /* Global validation pipe - class-validator */
   app.useGlobalPipes(
