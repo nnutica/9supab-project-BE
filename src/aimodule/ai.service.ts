@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RefineTextDto } from './dto/refine-text.dto';
 import { CoverLetterDto } from './dto/cover-letter.dto';
-import { AiResponse } from '../types/ai-response.interface';
+import { AiResponse } from '../apptypes/ai-response.interface';
 
 @Injectable()
 export class AiService {
