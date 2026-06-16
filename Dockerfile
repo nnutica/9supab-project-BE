@@ -3,20 +3,17 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install bun globally
-RUN npm install -g bun
-
 # Copy package files
 COPY package.json ./
-
-# Install ALL dependencies (Dev + Prod) for building
-RUN bun install
+# If bun.lock exists, we can still use it or just npm install
+# But to be safe and use standard node, we'll use npm
+RUN npm install
 
 # Copy source code and config
 COPY . .
 
-# Build application
-RUN bun run build
+# Build application using Nest CLI
+RUN npm run build
 
 
 # Runtime stage
@@ -29,13 +26,13 @@ ENV NODE_ENV=production
 # Copy package files
 COPY package.json ./
 
-# Install ONLY production dependencies (Using npm/yarn for stability in Runtime if needed, but keeping bun install --production as requested)
-RUN npm install -g bun && bun install --production
+# Install ONLY production dependencies
+RUN npm install --omit=dev
 
 # Copy compiled dist from builder
 COPY --from=builder /app/dist ./dist
 
-# Ensure the app can find the modules by checking structure
+# Check structure again (for logging)
 RUN ls -R dist
 
 EXPOSE 5000
