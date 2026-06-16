@@ -1,23 +1,31 @@
 # Build stage
-FROM oven/bun:latest AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json bun.lockb* ./
-RUN bun install --production=false
+# Install bun
+RUN npm install -g bun
+
+COPY package.json ./
+RUN bun install
 
 COPY . .
 RUN bun run build
 
 # Runtime stage
-FROM oven/bun:latest
+FROM node:20-alpine
 
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+# Install bun for runtime
+RUN npm install -g bun
+
+COPY package.json ./
+RUN bun install --production
+
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY package.json .
 
 EXPOSE 5000
 
