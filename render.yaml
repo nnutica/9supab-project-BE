@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: 9supab-backend
+    runtime: node
+    runtimeVersion: 20
+    buildCommand: |
+      curl -fsSL https://bun.sh/install | bash -s "bun-v1.0.0" && \
+      export PATH="$HOME/.bun/bin:$PATH" && \
+      bun install && \
+      bun run build
+    startCommand: bun dist/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
