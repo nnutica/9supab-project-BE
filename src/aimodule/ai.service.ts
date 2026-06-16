@@ -15,7 +15,7 @@ export class AiService {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     this.model = genAI.getGenerativeModel({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3.5-flash',
       generationConfig: {
         responseMimeType: 'application/json',
       },
