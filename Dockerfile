@@ -1,31 +1,27 @@
-# Build stage
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Install bun
-RUN npm install -g bun
-
-COPY package.json ./
-RUN bun install
-
-COPY . .
-RUN bun run build
-
-# Runtime stage
 FROM node:20-alpine
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Install bun for runtime
+# Install bun globally
 RUN npm install -g bun
 
+# Copy package files
 COPY package.json ./
-RUN bun install --production
 
-COPY --from=builder /app/dist ./dist
+# Install dependencies
+RUN bun install --production=false
+
+# Copy source code
+COPY src ./src
+COPY tsconfig.json tsconfig.build.json nest-cli.json ./
+
+# Build application
+RUN bun run build
+
+# Remove dev dependencies
+RUN bun install --production
 
 EXPOSE 5000
 
