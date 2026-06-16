@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RefineTextDto } from './dto/refine-text.dto';
 import { CoverLetterDto } from './dto/cover-letter.dto';
@@ -7,6 +7,7 @@ import { AiResponse } from '../apptypes/ai-response.interface';
 @Injectable()
 export class AiService {
   private readonly model;
+  private readonly logger = new Logger(AiService.name);
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -14,7 +15,7 @@ export class AiService {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     this.model = genAI.getGenerativeModel({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-flash',
       generationConfig: {
         responseMimeType: 'application/json',
       },
@@ -71,7 +72,11 @@ export class AiService {
 }`;
 
     try {
+      const start = Date.now();
       const result = await this.model.generateContent(prompt);
+      const duration = Date.now() - start;
+      this.logger.log(`Gemini AI (refineText) ประมวลผลสำเร็จใน ${duration}ms`);
+      
       const text = result.response.text();
       return JSON.parse(text) as AiResponse;
     } catch (error) {
@@ -108,7 +113,11 @@ export class AiService {
 }`;
 
     try {
+      const start = Date.now();
       const result = await this.model.generateContent(prompt);
+      const duration = Date.now() - start;
+      this.logger.log(`Gemini AI (generateCoverLetter) ประมวลผลสำเร็จใน ${duration}ms`);
+
       const text = result.response.text();
       return JSON.parse(text) as AiResponse;
     } catch (error) {
